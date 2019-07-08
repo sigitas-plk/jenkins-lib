@@ -1,6 +1,5 @@
 package com.sigi
 
-import com.sigi.gitHelpers
 
 import spock.lang.Specification
 import spock.util.mop.ConfineMetaClassChanges
@@ -13,7 +12,7 @@ class GitHelpersSpec extends Specification {
         def ignoreCommitTypes = ['ci' , 'something']
 
         expect: 'should return true'
-        gitHelpers.ignoreTitle('ci: anything', ignoreCommitTypes)
+        gitUtils.ignoreTitle('ci: anything', ignoreCommitTypes)
     }
 
     def 'should return true if given title does not start with a string in the ignoreCommitTypes list' () {
@@ -25,7 +24,7 @@ class GitHelpersSpec extends Specification {
         def ignore = ['feat', 'test']
 
         expect: 'should return false'
-        !gitHelpers.ignoreTitle(title, ignore)
+        !gitUtils.ignoreTitle(title, ignore)
     }
 
     def 'should return false if ignoreCommitTypes is empty' () {
@@ -37,7 +36,7 @@ class GitHelpersSpec extends Specification {
         def ignore = []
 
         expect: 'should return false'
-        !gitHelpers.ignoreTitle(title, ignore)
+        !gitUtils.ignoreTitle(title, ignore)
     }
 
     def 'should return false if ignoreCommitTypes is falsy' () {
@@ -49,59 +48,59 @@ class GitHelpersSpec extends Specification {
         def ignore = null
 
         expect: 'should return false'
-        !gitHelpers.ignoreTitle(title, ignore)
+        !gitUtils.ignoreTitle(title, ignore)
     }
 
-    @ConfineMetaClassChanges([gitHelpers])
+    @ConfineMetaClassChanges([gitUtils])
     def 'it should return map with title and tickets returned by getCommitTitle and getCommitJiraTickets' () {
 
         setup:
-        GroovySpy(gitHelpers, global: true)
+        GroovySpy(gitUtils, global: true)
         def hash = 'asdfasdfLKJLKJ'
         def title = 'ci: sample title'
         def tickets = ['JIR-1232', 'JIR-232']
 
         when: 'getCommitTitle and getCommitJiraTickets return given variables'
-        gitHelpers.getCommitTitle(hash) >> title
-        gitHelpers.getCommitJiraTickets(hash) >> tickets
-        gitHelpers.commitHashExists(hash) >> true
+        gitUtils.getCommitTitle(hash) >> title
+        gitUtils.getCommitJiraTickets(hash) >> tickets
+        gitUtils.commitHashExists(hash) >> true
 
         then: 'returned map contains title and tickets with getCommitTitle and '
-        gitHelpers.getCommitTitleAndTickets(hash) == [title: title, tickets: tickets]
+        gitUtils.getCommitTitleAndTickets(hash) == [title: title, tickets: tickets]
     }
 
-    @ConfineMetaClassChanges([gitHelpers])
+    @ConfineMetaClassChanges([gitUtils])
     def 'getChangeList should return list with filtered [title, tickets] map' () {
 
         given: 'commit list'
         List list =['test', 'ci' , 'fix']
 
         when: 'commit titles containing test, ci and fix types'
-        gitHelpers.metaClass.static.getPreviousTag = { String tag -> tag }
-        gitHelpers.metaClass.static.getCommitsBetweenTags = {
+        gitUtils.metaClass.static.getPreviousTag = { String tag -> tag }
+        gitUtils.metaClass.static.getCommitsBetweenTags = {
             String curTag, String prevTag -> list
         }
-        gitHelpers.metaClass.static.getCommitTitleAndTickets =  { String type ->  [title: "${type}: title", tickets: []]}
+        gitUtils.metaClass.static.getCommitTitleAndTickets =  { String type ->  [title: "${type}: title", tickets: []]}
 
         then: 'should only return test and fix commit maps'
-        gitHelpers.getChangeList('something', ['ci']) == [[title: 'test: title', tickets: []], [title: 'fix: title', tickets: []]]
+        gitUtils.getChangeList('something', ['ci']) == [[title: 'test: title', tickets: []], [title: 'fix: title', tickets: []]]
     }
 
-    @ConfineMetaClassChanges([gitHelpers])
+    @ConfineMetaClassChanges([gitUtils])
     def 'getChangeList should return empty list if all commits contain types in ignoreCommitTypes' () {
 
         given: 'commit list'
         List list =['test', 'ci' , 'fix']
 
         when: 'commit titles containing test, ci and fix types'
-        gitHelpers.metaClass.static.getPreviousTag = { String tag -> tag }
-        gitHelpers.metaClass.static.getCommitsBetweenTags = {
+        gitUtils.metaClass.static.getPreviousTag = { String tag -> tag }
+        gitUtils.metaClass.static.getCommitsBetweenTags = {
             String curTag, String prevTag -> list
         }
-        gitHelpers.metaClass.static.getCommitTitleAndTickets =  { String type ->  [title: "${type}: title", tickets: []]}
+        gitUtils.metaClass.static.getCommitTitleAndTickets =  { String type ->  [title: "${type}: title", tickets: []]}
 
         then: 'should filter out all commits'
-        gitHelpers.getChangeList('something', ['ci', 'test', 'fix']) == []
+        gitUtils.getChangeList('something', ['ci', 'test', 'fix']) == []
     }
 
 }
