@@ -1,3 +1,5 @@
+package com.sigi
+
 import com.sigi.gitHelpers
 
 import spock.lang.Specification

@@ -1,10 +1,11 @@
-import com.sigi.changelog
+package com.sigi
+
 
 import spock.lang.Specification
 
 class ChangelogSpec extends Specification {
 
-    static String resourceDir = 'test/resources/sigi/changelog'
+    static String resourceDir = 'test/resources/sigi/jiraUtils'
 
     def "should return markdown for given list of changes" () {
         given:
@@ -17,7 +18,7 @@ class ChangelogSpec extends Specification {
         def jiraUrl = 'http://test-jira/url/'
 
         when:
-        def formatted = changelog.getChangelogMarkdown(tag, changes,jiraUrl)
+        def formatted = jiraUtils.getChangelogMarkdown(tag, changes,jiraUrl)
 
         then:
         def expected = [
@@ -40,7 +41,7 @@ class ChangelogSpec extends Specification {
         def jiraUrl = 'http://test-jira/url/'
 
         when:
-        def formatted = changelog.getChangelogMarkdown(tag, changes,jiraUrl)
+        def formatted = jiraUtils.getChangelogMarkdown(tag, changes,jiraUrl)
 
         then:
         def expected = [
@@ -63,7 +64,7 @@ class ChangelogSpec extends Specification {
         def jiraUrl = 'http://test-jira/url/'
 
         when:
-        def formatted = changelog.getChangelogMarkdown(tag, changes,jiraUrl)
+        def formatted = jiraUtils.getChangelogMarkdown(tag, changes,jiraUrl)
 
         then:
         def expected = [
@@ -84,7 +85,7 @@ class ChangelogSpec extends Specification {
         def tag = '0.0.2'
 
         when:
-        def formatted = changelog.getChangelogMarkdown(tag, changes)
+        def formatted = jiraUtils.getChangelogMarkdown(tag, changes)
 
         then:
         def expected = [
@@ -104,7 +105,7 @@ class ChangelogSpec extends Specification {
         if(dir.exists()){
             assert dir.deleteDir()
         }
-        changelog.appendLinesToFileStart(path, 'change.txt', ['line 1'] as List<String>)
+        jiraUtils.appendLinesToFileStart(path, 'change.txt', ['line 1'] as List<String>)
 
         then:
         dir.exists()
@@ -120,7 +121,7 @@ class ChangelogSpec extends Specification {
         }
 
         when:
-        changelog.appendLinesToFileStart(path, fileName, ['line 1'])
+        jiraUtils.appendLinesToFileStart(path, fileName, ['line 1'])
 
         then:
         file.exists()
@@ -137,7 +138,7 @@ class ChangelogSpec extends Specification {
         def lines = ['line 1', 'line 2', 'line 3']
 
         when:
-        changelog.appendLinesToFileStart(path, fileName, lines)
+        jiraUtils.appendLinesToFileStart(path, fileName, lines)
 
         then: 'empty line at the top of the file + lines added'
         file.readLines() == ['', *lines]
@@ -155,7 +156,7 @@ class ChangelogSpec extends Specification {
 
         when:
         file << 'line 4'
-        changelog.appendLinesToFileStart(path, fileName, lines)
+        jiraUtils.appendLinesToFileStart(path, fileName, lines)
 
         then:
         file.readLines() == ['', *lines, 'line 4']

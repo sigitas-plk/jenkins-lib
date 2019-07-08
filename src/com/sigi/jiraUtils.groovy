@@ -2,7 +2,7 @@ package com.sigi
 
 static List<String> getChangelogMarkdown(String version, List<Map> changes, String jiraUrl = null) {
     if (!version || !changes) {
-        throw new Error('Version and list of changes are required to generate changelog list')
+        throw new Error('Version and list of changes are required to generate jiraUtils list')
     }
     def heading = ["### ${version} - ${new Date().format('yyyy-MM-dd')} ###"]
     return heading + changes.collect { change ->
