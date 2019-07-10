@@ -1,4 +1,4 @@
-package com.sigi
+package com.sigi.ioc
 
 class StepExecutor implements IStepExecutor {
 
@@ -21,5 +21,10 @@ class StepExecutor implements IStepExecutor {
     @Override
     void error(String message) {
         this._steps.error(message)
+    }
+
+    @Override
+    void echo(String message) {
+        this._steps.echo(message)
     }
 }
