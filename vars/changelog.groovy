@@ -9,6 +9,6 @@ def call(String toTagOrHash = null, String fromTagOrHash = null){
     def changes = toTagOrHash ? log.generateChangeLog(toTagOrHash) : log.generateChangeLog()
 
     if(changes){
-        log.writeChangelog(changes)
+        log.writeChangelog(changes,'changelog.md')
     }
 }

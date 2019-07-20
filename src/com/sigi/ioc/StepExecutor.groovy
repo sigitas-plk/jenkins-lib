@@ -18,6 +18,10 @@ class StepExecutor implements IStepExecutor {
         this._steps.sh returnStdout: true, script: "${command}"
     }
 
+    String sh(GString command){
+        return sh(command as String)
+    }
+
     @Override
     void error(String message) {
         this._steps.error(message)

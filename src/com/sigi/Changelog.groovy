@@ -37,25 +37,31 @@ class Changelog implements Serializable {
             """, true)
     }
 
-    private static String getPrettyListString(List<String> list){
+     static String getPrettyListString(List<String> list){
         return list.join(System.getProperty("line.separator")) + System.getProperty("line.separator")
     }
 
-    private static List<String> getChangelogMarkdown(String version, List<Map> changes, String jiraUrl = null) {
-        if (!version || !changes) {
+     static List<String> getChangelogMarkdown(String version, List<Map> changes, String jiraUrl = null) {
+         version = version ? version.trim() : ''
+        if (!version || !changes || changes.isEmpty()) {
             ContextRegistry.getContext().getStepExecutor().error 'Version and list of changes are required to generate changelog markdown'
         }
-        def heading = ["## ${version} - ${new Date().format('yyyy-MM-dd')}"]
-        return heading + changes.collect { change ->
-            change.title ? " - $change.title${getTicketsMarkdown(jiraUrl, change.tickets as List<String>)}" : null
-        }.findAll{ p -> p as Boolean}
-    }
 
-    private static getTicketsMarkdown(String url,List<String> tickets) {
+        return ["## ${version} - ${new Date().format('yyyy-MM-dd')}"] + changes.collect { change ->
+            change.title ? " - $change.title ${getTicketsMarkdown(jiraUrl, change.tickets as List<String>)}" : null
+        }.findAll{ it }
+     }
+
+     static getTicketsMarkdown(String url, List<String> tickets) {
         if(!tickets || tickets.isEmpty()) {
             return ''
         }
-        return ' ' + tickets.collect { ticket -> !url ? ticket :  "[$ticket]($url$ticket)" }.join(' ')
-    }
 
+        url = url ? url.trim() : ''
+        if(url){
+            url =  url.endsWith('/') ? url : "$url/"
+        }
+
+        return tickets.collect { ticket -> !url ? ticket :  "[$ticket]($url$ticket)" }.join(' ')
+    }
 }
