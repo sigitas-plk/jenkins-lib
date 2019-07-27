@@ -1,17 +1,17 @@
 package com.sigi.ioc
 
 class ContextRegistry implements Serializable {
-    private static IContext _context
+	private static IContext _context
 
-    static void registerContext(IContext context) {
-        _context = context
-    }
+	static void registerContext(IContext context) {
+		_context = context
+	}
 
-    static void registerDefaultContext(Object steps) {
-        _context = new DefaultContext(steps)
-    }
+	static void registerDefaultContext(Object steps) {
+		_context = new DefaultContext(steps)
+	}
 
-    static IContext getContext() {
-        return _context
-    }
+	static IContext getContext() {
+		return _context
+	}
 }
